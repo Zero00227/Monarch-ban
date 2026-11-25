@@ -225,46 +225,21 @@ function renderJob(job) {
 }
 
 /* ============ SSE ============ */
-const es = new EventSource('/api/stream')
-
-es.addEventListener('state', (e) => {
-  const s = JSON.parse(e.data)
-  renderSessions(s.sessions)
-  const running = s.jobs.find((j) => j.status === 'running')
-  if (running) renderJob(running)
-  $('link').className = 'dot on'; $('link').textContent = 'LINKED'
-})
-
-es.addEventListener('session', (e) => {
-  const s = JSON.parse(e.data)
-  const map = new Map((window.__sess || []).map((x) => [x.label, x]))
-  map.set(s.label, s)
-  window.__sess = [...map.values()]
-  renderSessions(window.__sess)
-})
-
-es.addEventListener('code', (e) => {
-  const { label, code } = JSON.parse(e.data)
-  $('codeBox').textContent = `${label} → ${code}`
-  log(`code d'appairage ${label} : ${code}`, 'warn')
-})
-
-es.addEventListener('job', (e) => renderJob(JSON.parse(e.data)))
-es.addEventListener('row', (e) => {
-  const { jobId, row } = JSON.parse(e.data)
-  if (!currentJob || currentJob.id !== jobId) return
-  const i = currentJob.rows.findIndex((r) => r.pass === row.pass)
-  if (i > -1) currentJob.rows[i] = row; else currentJob.rows.push(row)
-  renderRows(currentJob.rows)
-})
-es.addEventListener('log', (e) => {
-  const { text, level } = JSON.parse(e.data)
-  log(text, level)
-})
-
-es.onopen = () => { $('link').className = 'dot on'; $('link').textContent = 'LINKED' }
-es.onerror = () => { $('link').className = 'dot off'; $('link').textContent = 'OFFLINE' }
-
+async function poll() {
+  try {
+    const r = await fetch('/api/state')
+    const s = await r.json()
+    $('link').className = 'dot on'; $('link').textContent = 'LINKED'
+    renderSessions(s.sessions)
+    const code = s.sessions.find((x) => x.code)
+    if (code) $('codeBox').textContent = `${code.label} → ${code.code}`
+    if (s.job) renderJob(s.job)
+  } catch {
+    $('link').className = 'dot off'; $('link').textContent = 'OFFLINE'
+  }
+}
+poll()
+setInterval(poll, 1500)
 /* ============ appairage ============ */
 $('pairForm').addEventListener('submit', async (e) => {
   e.preventDefault()
