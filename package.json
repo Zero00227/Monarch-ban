@@ -1,0 +1,13 @@
+{
+  "name": "monarch-ban",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node server.js" },
+  "dependencies": {
+    "@whiskeysockets/baileys": "6.7.18",
+    "express": "^4.21.2",
+    "pino": "^9.5.0"
+  }
+}
