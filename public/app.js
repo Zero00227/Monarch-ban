@@ -280,6 +280,4 @@ $('attackForm').addEventListener('submit', async (e) => {
   log(`attaque lancée sur ${body.target}`, 'warn')
 })
 
-$('stop').addEventListener('click', () => {
-  if (currentJob) fetch(`/api/attack/${currentJob.id}/stop`, { method: 'POST' })
-})
+$('stop').addEventListener('click', () => fetch('/api/stop', { method: 'POST' }))
