@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MONARCH // BAN ENGINE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="skulls"></canvas>
+<div class="scan"></div>
+
+<div class="shell">
+
+  <header class="top">
+    <div class="brand">
+      <span class="sig">☠</span>
+      <h1>MONARCH<span class="dim"> // BAN ENGINE</span></h1>
+    </div>
+    <div class="hud">
+      <button id="music" class="btn ghost">MUSIC: OFF</button>
+      <span id="link" class="dot off">OFFLINE</span>
+    </div>
+  </header>
+
+  <section class="panel">
+    <h2>SESSIONS <span class="tag">isolées</span></h2>
+    <div id="sessions" class="sessions"></div>
+    <form id="pairForm" class="row">
+      <input id="pLabel" placeholder="label (ex: bot1)" autocomplete="off" required>
+      <input id="pPhone" placeholder="numéro international sans +" autocomplete="off" required>
+      <button class="btn">PAIR</button>
+    </form>
+    <div id="codeBox" class="code"></div>
+  </section>
+
+  <section class="panel">
+    <h2>CIBLE</h2>
+    <form id="attackForm">
+      <div class="row">
+        <input id="target" placeholder="numéro de la cible (ex: 221770000000)" autocomplete="off" required>
+      </div>
+      <div class="row">
+        <label class="field">PASSES <b id="passVal">2</b>
+          <input id="passes" type="range" min="1" max="3" value="2" step="1">
+        </label>
+        <label class="field">DURÉE <b id="durVal">60</b>s
+          <input id="duration" type="range" min="15" max="180" value="60" step="5">
+        </label>
+        <label class="field">PAUSE <b id="pauseVal">20</b>s
+          <input id="pause" type="range" min="0" max="120" value="20" step="5">
+        </label>
+      </div>
+      <div class="row">
+        <input id="groupId" placeholder="groupId commun (optionnel, pour le module group)" autocomplete="off">
+      </div>
+      <fieldset class="mods">
+        <legend>MODULES</legend>
+        <label><input type="checkbox" value="presence" checked> presence</label>
+        <label><input type="checkbox" value="receipt" checked> receipt</label>
+        <label><input type="checkbox" value="chatmodify" checked> chatmodify</label>
+        <label><input type="checkbox" value="revoke" checked> revoke</label>
+        <label><input type="checkbox" value="globalPresence"> globalPresence</label>
+        <label><input type="checkbox" value="group"> group</label>
+      </fieldset>
+      <div class="row">
+        <button class="btn big" type="submit">☠ LAUNCH ATTACK</button>
+        <button class="btn ghost" type="button" id="stop">STOP</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>PROGRESSION</h2>
+    <table>
+      <thead>
+        <tr><th>PASSE</th><th>SESSIONS</th><th>DURÉE</th><th>STANZAS</th><th>ÉTAT</th><th>VERDICT</th></tr>
+      </thead>
+      <tbody id="rows"><tr><td colspan="6" class="empty">aucune attaque lancée</td></tr></tbody>
+    </table>
+    <div id="verdict" class="verdict idle">STANDBY</div>
+  </section>
+
+  <section class="panel">
+    <h2>JOURNAL</h2>
+    <pre id="log" class="log"></pre>
+  </section>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
