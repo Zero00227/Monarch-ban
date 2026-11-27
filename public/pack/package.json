@@ -1,0 +1,10 @@
+{
+  "name": "monarch-ban-pack",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.0",
+    "qrcode-terminal": "^0.12.0",
+    "pino": "^9.0.0"
+  }
+}
