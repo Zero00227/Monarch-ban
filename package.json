@@ -1,14 +1,10 @@
 {
   "name": "monarch-ban",
-  "version": "1.0.0",
+  "version": "4.0.0",
   "private": true,
-  "type": "commonjs",
-  "engines": { "node": "20.x" },
-  "scripts": { "dev": "node server.js" },
-  "dependencies": {
-    "@whiskeysockets/baileys": "6.7.18",
-    "@upstash/redis": "^1.34.3",
-    "express": "^4.21.2",
-    "pino": "^9.5.0"
+  "description": "Console de campagne de bannissement WhatsApp",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
   }
 }
