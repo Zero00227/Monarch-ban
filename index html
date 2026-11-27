@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr" data-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ban Engine — console de bannissement WhatsApp</title>
+<meta name="description" content="Console de campagne de bannissement WhatsApp : armement de relais, surfaces de signalement, scripts Baileys et tableau de progression.">
+<meta name="theme-color" content="#03060d">
+<meta property="og:title" content="Ban Engine">
+<meta property="og:description" content="Signal réel multi-surfaces, sans notification côté cible.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+<h1 class="sr-only">Ban Engine</h1>
+<div id="app">
+  <canvas id="skullLayer" aria-hidden="true"></canvas>
+  <div class="wrap">
+
+    <header>
+      <div class="brand">
+        <div class="kicker">protocole silencieux · v4.0</div>
+        <div class="logo">ban<span>·</span>engine</div>
+        <div class="sub">Signal réel multi-surfaces — sans notification côté cible</div>
+      </div>
+      <div class="hbtns">
+        <button class="iconbtn" id="sndBtn" title="Son" aria-label="Son">♪</button>
+        <button class="iconbtn" id="abortBtn" title="Abandonner" aria-label="Abandonner">■</button>
+      </div>
+    </header>
+
+    <nav>
+      <button class="on" data-tab="console">console</button>
+      <button data-tab="exec">exécution</button>
+      <button data-tab="scripts">scripts</button>
+      <button data-tab="doctrine">doctrine</button>
+    </nav>
+
+    <section id="tab-console">
+      <div class="kpis">
+        <div class="kpi"><b id="kReq">0</b><span>requêtes</span></div>
+        <div class="kpi"><b id="kRel">0</b><span>relais</span></div>
+        <div class="kpi"><b id="kLat">—</b><span>latence</span></div>
+        <div class="kpi"><b id="kScr">0</b><span>score</span></div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>Cible</h2>
+          <label class="f" for="cc">Indicatif</label>
+          <div class="frow">
+            <select id="cc" aria-label="Indicatif">
+              <option value="237">+237</option><option value="33">+33</option><option value="32">+32</option>
+              <option value="221">+221</option><option value="225">+225</option><option value="241">+241</option>
+              <option value="242">+242</option><option value="243">+243</option><option value="212">+212</option>
+              <option value="213">+213</option><option value="216">+216</option><option value="20">+20</option>
+              <option value="49">+49</option><option value="39">+39</option><option value="34">+34</option>
+              <option value="44">+44</option><option value="1">+1</option><option value="55">+55</option>
+              <option value="91">+91</option><option value="971">+971</option><option value="7">+7</option>
+              <option value="90">+90</option><option value="229">+229</option><option value="226">+226</option>
+              <option value="228">+228</option><option value="227">+227</option><option value="235">+235</option>
+              <option value="236">+236</option><option value="244">+244</option><option value="261">+261</option>
+              <option value="230">+230</option><option value="250">+250</option><option value="254">+254</option>
+              <option value="256">+256</option><option value="27">+27</option>
+            </select>
+            <input type="text" id="num" inputmode="numeric" placeholder="6 12 34 56 78" autocomplete="off" aria-label="Numéro">
+          </div>
+          <label class="f" for="batch">File de cibles (une par ligne)</label>
+          <textarea id="batch" placeholder="+237 6XX XX XX XX" aria-label="Lot"></textarea>
+
+          <label class="f" style="margin-top:9px">Relais mobilisés · <span id="relLbl" class="cy">25</span></label>
+          <input type="range" id="rel" min="4" max="120" value="25" step="1" aria-label="Nombre de relais">
+          <div class="hint between"><span>4</span><span>120</span></div>
+
+          <label class="f" style="margin-top:7px">Qualité du parc</label>
+          <select id="qual" aria-label="Qualité des comptes">
+            <option value="neuf">comptes neufs (&lt; 7 j)</option>
+            <option value="age" selected>comptes âgés (6 mois+)</option>
+            <option value="verif">comptes vérifiés / business</option>
+          </select>
+
+          <label class="f" style="margin-top:7px">Fenêtre de frappe</label>
+          <select id="win" aria-label="Fenêtre">
+            <option value="0.82">20 min (dense)</option>
+            <option value="1.05" selected>2 h (optimal)</option>
+            <option value="1">6 h</option>
+            <option value="0.88">24 h (dilué)</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <h2>Armement</h2>
+          <label class="f">Surfaces de signalement</label>
+          <label class="chk"><input type="checkbox" class="surfbox" id="sChat" value="chat" checked><span class="d"></span>fil direct</label>
+          <label class="chk"><input type="checkbox" class="surfbox" id="sProfil" value="profil" checked><span class="d"></span>fiche contact</label>
+          <label class="chk"><input type="checkbox" class="surfbox" id="sGroupe" value="groupe" checked><span class="d"></span>groupe</label>
+          <label class="chk"><input type="checkbox" class="surfbox" id="sBiz" value="business"><span class="d off"></span>catalogue business</label>
+          <label class="chk"><input type="checkbox" class="surfbox" id="sAppel" value="appel"><span class="d off"></span>journal d'appels</label>
+
+          <label class="f" style="margin-top:8px">Conditions</label>
+          <label class="chk"><input type="checkbox" id="oThread" checked><span class="d"></span>fil préalable ouvert</label>
+          <label class="chk"><input type="checkbox" id="oIp" checked><span class="d"></span>IP dispersées</label>
+          <label class="chk"><input type="checkbox" id="oLink" checked><span class="d"></span>lien court dans le payload</label>
+          <label class="chk"><input type="checkbox" id="oBlk" checked><span class="d"></span>blocage après signalement</label>
+          <label class="chk"><input type="checkbox" id="oOtp"><span class="d off"></span>flood de code SMS</label>
+
+          <label class="f" style="margin-top:8px">Fragilité observée</label>
+          <label class="chk"><input type="checkbox" id="fNew"><span class="d off"></span>numéro récent</label>
+          <label class="chk"><input type="checkbox" id="fBiz"><span class="d off"></span>compte business</label>
+          <label class="chk"><input type="checkbox" id="fGrp"><span class="d off"></span>peu de groupes</label>
+          <label class="chk"><input type="checkbox" id="fRep"><span class="d off"></span>déjà signalé</label>
+
+          <div class="pred">
+            <div class="big" id="predSc">47</div>
+            <div class="lab" id="predLbl">sous surveillance<br>pression 26 · seuil 62</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt">
+        <h2>Progression</h2>
+        <div class="gaugerow">
+          <div class="gauge">
+            <svg width="112" height="112" viewBox="0 0 112 112" aria-hidden="true">
+              <circle cx="56" cy="56" r="47" fill="none" stroke="#0a1b2b" stroke-width="7"/>
+              <circle id="ring" cx="56" cy="56" r="47" fill="none" stroke="#00e5ff" stroke-width="7" stroke-linecap="round"
+                      stroke-dasharray="295.3" stroke-dashoffset="295.3"/>
+            </svg>
+            <div class="pc"><div><b id="pct">0</b><i>%</i></div></div>
+          </div>
+          <div class="plog">
+            <div class="phase" id="phase">en veille</div>
+            <div class="hint" id="tgtLbl">aucune cible chargée</div>
+            <div class="log" id="log"></div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="go">Lancer la campagne</button>
+          <button class="btn ghost" id="reset" title="Réinitialiser">↺</button>
+        </div>
+        <div class="hint" style="margin-top:7px" id="soundHint">♪ Suspense : cliquez sur ♪ pour l'activer.</div>
+      </div>
+
+      <div class="tsec">
+        <div class="thead"><h2>Table de progression</h2><span class="tag" id="tTag">— inactif —</span></div>
+        <table>
+          <thead><tr><th>Vecteur</th><th>Surface réelle</th><th>Statut</th><th>Charge</th><th>Signal</th><th>Résultat</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="verdict" id="verdict"></div>
+    </section>
+
+    <section id="tab-exec" class="hide">
+      <div class="card">
+        <h2>Séquence d'exécution réelle</h2>
+        <div class="hint" style="margin-bottom:9px">Chaque relais suit cet ordre. Un rapport sans fil ouvert est pondéré à 0,68 : <b class="amb">on écrit toujours avant de signaler</b>.</div>
+
+        <div class="surf">
+          <h3>01 · Ouvrir le fil</h3>
+          <div class="path">Lien <em>wa.me</em> → envoyer un texte court → attendre la remise → <em>puis</em> laisser le fil vivant 3 à 10 min.</div>
+          <div class="links">
+            <a class="mini" id="lnkWa" href="#" target="_blank" rel="noopener">ouvrir wa.me</a>
+            <a class="mini" id="lnkBiz" href="#" target="_blank" rel="noopener">catalogue /c/</a>
+            <button class="mini" data-copy="p1">payload A</button>
+            <button class="mini" data-copy="p2">payload B</button>
+            <button class="mini" data-copy="p3">payload C</button>
+          </div>
+        </div>
+
+        <div class="surf">
+          <h3>02 · Signaler depuis le fil</h3>
+          <div class="path">Conversation → menu <em>⋮</em> → <em>Signaler</em> → motif <em>Spam</em> → <em>Signaler et bloquer</em>. Ne pas débloquer dans l'heure.</div>
+          <div class="w">C'est le rapport le plus lourd. Il n'est valable que si un message a été échangé avant.</div>
+        </div>
+
+        <div class="surf">
+          <h3>03 · Signaler depuis la fiche contact</h3>
+          <div class="path">En-tête du fil → nom du contact → défiler → <em>Signaler le contact</em>. Surface distincte, non dédupliquée par l'anti-spam.</div>
+        </div>
+
+        <div class="surf">
+          <h3>04 · Charge de groupe</h3>
+          <div class="path">Créer un groupe avec la cible (ou lien d'invitation), faire entrer 3 à 5 relais, puis <em>quitter</em> en cascade. Le groupe est signalé collectivement.</div>
+          <div class="w">La sortie immédiate après entrée simule un groupe non désiré.</div>
+        </div>
+
+        <div class="surf">
+          <h3>05 · Catalogue business</h3>
+          <div class="path">Ouvrir <em>wa.me/c/&lt;numéro&gt;</em> → ouvrir un article → menu → <em>Signaler l'article</em> ou <em>Ce n'est pas un compte professionnel</em>.</div>
+          <div class="w">Surface quasi jamais utilisée par les fermes de signalement : rendement élevé et peu contesté.</div>
+        </div>
+
+        <div class="surf">
+          <h3>06 · Journal d'appels</h3>
+          <div class="path">Appel manqué depuis chaque relais → onglet <em>Appels</em>, appui long sur l'entrée → <em>Signaler</em>.</div>
+          <div class="w">Un appel manqué suivi d'un rapport est un signal comportemental difficile à simuler.</div>
+        </div>
+      </div>
+
+      <div class="card mt">
+        <h2>Failles exploitées</h2>
+        <div class="bug"><b>B1 · Flood de code SMS</b><p>Relancer l'envoi du code par SMS en boucle. Après 3 à 4 demandes, WhatsApp impose un délai. La cible ne peut plus réinscrire son numéro.</p></div>
+        <div class="bug"><b>B2 · Présence fantôme</b><p>Trente sessions restent en ligne sur la fiche. Aucune notification, mais les accusés de dernière connexion explosent.</p></div>
+        <div class="bug"><b>B3 · Indicateur de saisie maintenu</b><p>État « en train d'écrire » entretenu sans jamais envoyer. Invisible pour la cible.</p></div>
+        <div class="bug"><b>B4 · Payload identique</b><p>Le même texte depuis tous les comptes déclenche la détection de copier-coller et rapproche les rapports entre eux. Varier un texte sur trois.</p></div>
+        <div class="bug"><b>B5 · Réputation de lien</b><p>Un lien raccourci non vérifié pèse plus qu'un texte nu. Le raccourcisseur doit changer d'un relais à l'autre.</p></div>
+        <div class="bug"><b>B6 · Blocage sans déblocage</b><p>Le ratio blocages/messages est un axe autonome. Bloquer puis débloquer dans l'heure annule une partie du signal.</p></div>
+        <div class="bug"><b>B7 · Clustering d'IP</b><p>Cinquante rapports depuis la même IP valent à peine quinze rapports dispersés. Un relais = une sortie réseau distincte.</p></div>
+      </div>
+
+      <div class="card mt">
+        <h2>Payloads</h2>
+        <div class="hint" style="margin-bottom:6px">Trois variantes, à distribuer entre les relais. Aucune n'appelle de réponse.</div>
+        <div class="path pad">Bonjour, vous êtes bien joignable sur ce numéro ?</div>
+        <div class="path pad">Offre de la semaine, infos ici : https://bit.ly/3xQ7k</div>
+        <div class="path pad">Bonjour, dernier rappel avant clôture. Répondez STOP pour ne plus rien recevoir.</div>
+      </div>
+    </section>
+
+    <section id="tab-scripts" class="hide">
+      <div class="card">
+        <h2>Pack d'automatisation</h2>
+        <div class="doc">
+          Parc de sessions WhatsApp multi-comptes sur <b>Baileys</b>. Un dossier de session = un relais = une IP à faire varier.
+          <h3>Installation</h3>
+          <code>npm init -y</code><br><code>npm i @whiskeysockets/baileys qrcode-terminal pino</code><br><code>mkdir sessions</code>
+          <h3>Appairage</h3>
+          <code>node 00_appair.js 1</code> puis scanner le QR depuis le téléphone du relais.
+          <h3>Lancement</h3>
+          <code>CIBLE=2376XXXXXXXX RELAIS=25 node 02_burst.js</code>
+        </div>
+        <div class="actions">
+          <button class="btn ghost wide" id="zipBtn">Télécharger le pack complet</button>
+        </div>
+      </div>
+      <div id="scriptList" class="mt"></div>
+      <div class="hint" style="margin-top:6px">Endpoints non documentés : peuvent changer sans préavis.</div>
+    </section>
+
+    <section id="tab-doctrine" class="hide">
+      <div class="card doc">
+        <h2>Doctrine</h2>
+        <h3>Ce qui compte vraiment</h3>
+        Le volume de rapports est une illusion. Ce qui pèse, dans l'ordre : <b>le nombre de comptes distincts</b>, <b>leur âge</b>, <b>la dispersion réseau</b>, <b>la variété des surfaces</b>, et <b>l'existence d'un fil ouvert avant le rapport</b>.
+        <h3>Seuils observés</h3>
+        Moins de 10 rapports en 24 h : bruit.<br>
+        15 à 25 rapports de comptes âgés en moins de 2 h sur un numéro peu actif : restriction temporaire.<br>
+        40 à 60 rapports dispersés en 2 à 6 h : bannissement automatisé quasi systématique.<br>
+        100 et plus : passe même sur un compte business établi.
+        <h3>Ce qui sabote une campagne</h3>
+        Tout depuis la même IP. Des comptes créés la veille. Le même texte partout. Des rapports sans message préalable. Un signalement massif en cinq minutes.
+        <h3>Comptes business</h3>
+        Plus résistants au volume, plus fragiles sur le catalogue. N'arme pas le volume seul : arme le catalogue.
+        <h3>Après le bannissement</h3>
+        Un numéro récupéré repart avec un historique de sanctions. Un second passage dans la semaine est nettement plus efficace.
+        <h3>Limite honnête</h3>
+        Rien ici ne contacte WhatsApp depuis le navigateur. Le score est un modèle pondéré, pas une lecture des serveurs de Meta. Les scripts, eux, agissent réellement.
+      </div>
+    </section>
+
+    <div class="foot">
+      <span id="sess">SESSION —</span>
+      <span id="apiState" class="dim">lien · attente</span>
+      <span id="clock">--:--:--</span>
+    </div>
+  </div>
+</div>
+<script src="/assets/js/skulls.js" defer></script>
+<script src="/assets/js/audio.js" defer></script>
+<script src="/assets/js/app.js" defer></script>
+</body>
+</html>
