@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
-<h1 class="sr-only">Ban Engine</h1>
+<h1 class="sr-only">Monarch Ban</h1>
 <div id="app">
   <canvas id="skullLayer" aria-hidden="true"></canvas>
   <div class="wrap">
